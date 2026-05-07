@@ -1,1 +1,50 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg:       #1E2128;
+  --surface:  #252930;
+  --card:     #2C3140;
+  --card2:    #323847;
+  --border:   rgba(255,255,255,0.08);
+  --border2:  rgba(255,255,255,0.14);
+
+  --accent:  #FF4D1C;
+  --accent2: #FF8C5A;
+
+  --rouge:    #E05C5C;
+  --orange:   #E8944A;
+  --vert:     #4CAF82;
+  --bleu:     #4F86F7;
+  --jaune:    #D4A843;
+  --cyan:     #3BBFB0;
+
+  --texte:    #D8DCE8;
+  --texte2:   #8E95A8;
+  --texte3:   #555E72;
+
+  --police-principale: 'Inter', sans-serif;
+  --police-mono:       'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  width: 100%;
+  background: var(--bg);
+  color: var(--texte);
+  font-family: var(--police-principale);
+  overflow-x: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+button { font-family: var(--police-principale); cursor: pointer; }
+
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--card2); border-radius: 99px; }

@@ -1,0 +1,680 @@
+.mise-en-page {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background: var(--bg);
+}
+
+/* ── BARRE LATÉRALE ── */
+.barre-laterale {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 60px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+  z-index: 100;
+  gap: 6px;
+}
+
+.logo {
+  width: 32px; height: 32px;
+  background: var(--accent);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  position: relative;
+  &::after {
+    content: '';
+    width: 12px; height: 12px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.element-nav {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .15s;
+
+  svg { width: 17px; height: 17px; stroke: var(--texte3); }
+
+  &.actif {
+    background: rgba(79,134,247,0.12);
+    svg { stroke: var(--accent); }
+  }
+
+  &:hover:not(.actif) {
+    background: var(--card2);
+    svg { stroke: var(--texte2); }
+  }
+}
+
+.bas-barre-laterale { margin-top: auto; }
+
+.avatar {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.03em;
+}
+
+/* ── CONTENU PRINCIPAL ── */
+.contenu-principal {
+  margin-left: 60px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  flex: 1;
+}
+
+/* ── BARRE SUPÉRIEURE ── */
+.barre-superieure {
+  height: 52px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.titre-application {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--texte);
+  flex: 1;
+  letter-spacing: -0.01em;
+  span { color: var(--accent); }
+}
+
+.etiquette-role {
+  font-family: var(--police-mono);
+  font-size: 10px;
+  color: var(--texte3);
+  background: var(--card);
+  border: 1px solid var(--border2);
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+
+.pastille-statut {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-family: var(--police-mono);
+  border: 1px solid;
+
+  &.ok {
+    background: rgba(76,175,130,0.08);
+    border-color: rgba(76,175,130,0.2);
+    color: var(--vert);
+  }
+  &.danger {
+    background: rgba(224,92,92,0.08);
+    border-color: rgba(224,92,92,0.2);
+    color: var(--rouge);
+  }
+}
+
+.point-clignotant {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  animation: clignoter 2s infinite;
+  &.vert  { background: var(--vert); }
+  &.rouge { background: var(--rouge); }
+}
+
+@keyframes clignoter {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+.bouton-navigation {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border-radius: 4px;
+  background: var(--card);
+  border: 1px solid var(--border2);
+  color: var(--texte2);
+  font-size: 11px;
+  font-family: var(--police-mono);
+  transition: all .15s;
+
+  svg { width: 13px; height: 13px; stroke: var(--texte2); }
+
+  &:hover {
+    background: rgba(79,134,247,0.08);
+    border-color: rgba(79,134,247,0.25);
+    color: var(--accent2);
+    svg { stroke: var(--accent); }
+  }
+
+  @media (max-width: 768px) {
+    span { display: none; }
+    padding: 5px;
+  }
+}
+
+.indicateur-connexion {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-family: var(--police-mono);
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid;
+
+  &.connecte    { background: rgba(76,175,130,0.08); border-color: rgba(76,175,130,0.2); color: var(--vert); }
+  &.deconnecte  { background: rgba(224,92,92,0.08);  border-color: rgba(224,92,92,0.2);  color: var(--rouge); }
+}
+
+.point-connexion {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: clignoter 2s infinite;
+}
+
+/* ── BARRE D'ONGLETS ── */
+.barre-onglets {
+  display: flex;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 20px;
+}
+
+.onglet {
+  padding: 10px 14px;
+  font-size: 12px;
+  font-family: var(--police-mono);
+  color: var(--texte3);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all .15s;
+
+  &.actif {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  &:hover:not(.actif) { color: var(--texte2); }
+}
+
+/* ── ZONE DE CONTENU ── */
+.zone-contenu {
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── BANDEAU D'ALERTE ── */
+.bandeau-alerte {
+  border-radius: 6px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-left: 3px solid;
+
+  &.securite {
+    background: rgba(76,175,130,0.06);
+    border-color: var(--vert);
+  }
+  &.danger {
+    background: rgba(224,92,92,0.07);
+    border-color: var(--rouge);
+  }
+}
+
+.icone-alerte {
+  width: 34px; height: 34px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  svg { width: 16px; height: 16px; }
+
+  &.securite { background: rgba(76,175,130,0.1); svg { stroke: var(--vert); } }
+  &.danger   { background: rgba(224,92,92,0.1);  svg { stroke: var(--rouge); } }
+}
+
+.texte-alerte { flex: 1; }
+
+.titre-alerte {
+  font-size: 13px;
+  font-weight: 600;
+  &.securite { color: var(--vert); }
+  &.danger   { color: var(--rouge); }
+}
+
+.sous-titre-alerte {
+  font-size: 11px;
+  color: var(--texte2);
+  margin-top: 2px;
+  font-family: var(--police-mono);
+}
+
+.heure-maj {
+  font-size: 10px;
+  color: var(--texte3);
+  font-family: var(--police-mono);
+}
+
+/* ── STATUT GLOBAL ── */
+.statut-global {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.icone-statut {
+  width: 52px; height: 52px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg { width: 26px; height: 26px; }
+
+  &.securite { background: rgba(76,175,130,0.1);  svg { stroke: var(--vert); } }
+  &.danger   { background: rgba(224,92,92,0.1);   svg { stroke: var(--rouge); } }
+}
+
+.titre-statut {
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  &.securite { color: var(--vert); }
+  &.danger   { color: var(--rouge); }
+}
+
+.sous-titre-statut {
+  font-size: 12px;
+  color: var(--texte2);
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* ── GRILLE DE JAUGES ── */
+.grille-jauges {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.carte-capteur {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  transition: border-color .2s;
+
+  &.danger { border-color: rgba(224,92,92,0.3); }
+  &.alerte { border-color: rgba(232,148,74,0.3); }
+}
+
+.entete-capteur {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.etiquette-capteur {
+  font-size: 10px;
+  color: var(--texte2);
+  font-family: var(--police-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.badge-capteur {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-family: var(--police-mono);
+
+  &.badge-normal { background: rgba(76,175,130,0.1);  color: var(--vert); }
+  &.badge-alerte { background: rgba(232,148,74,0.1);  color: var(--orange); }
+  &.badge-danger { background: rgba(224,92,92,0.1);   color: var(--rouge); }
+}
+
+.jauge-svg { display: block; margin: 0 auto; width: 95px; height: 58px; }
+
+.echelle-capteur {
+  font-size: 9px;
+  color: var(--texte3);
+  font-family: var(--police-mono);
+  margin-top: 5px;
+  text-align: center;
+}
+
+.barre-progression-fond {
+  height: 3px;
+  background: var(--card2);
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 8px;
+}
+
+.barre-progression {
+  height: 100%;
+  border-radius: 99px;
+  transition: width .6s ease;
+}
+
+/* ── GRILLE INFÉRIEURE ── */
+.grille-inferieure {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.carte {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.titre-carte {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--texte);
+}
+
+.sous-titre-carte {
+  font-size: 10px;
+  color: var(--texte3);
+  font-family: var(--police-mono);
+  margin-top: 2px;
+  margin-bottom: 12px;
+}
+
+/* ── CONSIGNES ── */
+.liste-consignes { display: flex; flex-direction: column; gap: 8px; }
+
+.element-consigne {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px;
+  background: var(--card2);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.numero-consigne {
+  width: 22px; height: 22px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  background: rgba(79,134,247,0.12);
+  border: 1px solid rgba(79,134,247,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--police-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.texte-consigne {
+  font-size: 12px;
+  color: var(--texte);
+  line-height: 1.5;
+
+  strong { color: var(--accent2); font-weight: 600; }
+}
+
+/* ── CONTACTS ── */
+.liste-contacts { display: flex; flex-direction: column; gap: 8px; }
+
+.contact {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--card2);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+}
+
+.icone-contact { font-size: 18px; }
+
+.nom-contact {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--texte);
+}
+
+.type-contact {
+  font-size: 10px;
+  color: var(--texte2);
+  font-family: var(--police-mono);
+}
+
+.numero-contact {
+  margin-left: auto;
+  font-size: 20px;
+  font-weight: 700;
+  font-family: var(--police-mono);
+
+  &.pompiers { color: var(--rouge); }
+  &.samu     { color: var(--bleu); }
+  &.police   { color: var(--cyan); }
+}
+
+/* ── ONGLET BADGE ── */
+.badge-onglet {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--rouge);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+/* ── GRAPHIQUE SVG ── */
+.svg-graphique {
+  width: 100%;
+  height: 120px;
+  margin-top: 8px;
+}
+
+/* ── JOURNAL ALERTES ── */
+.liste-alertes-journal {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.element-alerte-journal {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px;
+  background: var(--card2);
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  transition: opacity .2s;
+
+  &.critique { border-color: rgba(224,92,92,0.2); }
+  &.alerte   { border-color: rgba(232,148,74,0.2); }
+  &.lue      { opacity: 0.5; }
+}
+
+.point-alerte {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+  &.point-critique { background: var(--rouge); }
+  &.point-alerte   { background: var(--orange); }
+  &.point-info     { background: var(--cyan); }
+}
+
+.corps-alerte-journal { flex: 1; }
+.titre-alerte-journal  { font-size: 12px; font-weight: 600; color: var(--texte); margin-bottom: 2px; }
+.detail-alerte-journal { font-size: 10px; color: var(--texte2); font-family: var(--police-mono); }
+.heure-alerte-journal  { font-size: 10px; color: var(--texte3); font-family: var(--police-mono); white-space: nowrap; }
+
+.aucune-alerte {
+  text-align: center;
+  padding: 24px;
+  font-size: 12px;
+  color: var(--texte3);
+  font-family: var(--police-mono);
+}
+
+/* ── ENTETE CARTE ── */
+.entete-carte {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.bouton-action-rapide {
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-family: var(--police-mono);
+  border: 1px solid;
+  cursor: pointer;
+  &.neutre {
+    background: var(--card2);
+    border-color: var(--border2);
+    color: var(--texte2);
+  }
+}
+
+/* ── PIED DE PAGE ── */
+.pied-de-page {
+  margin-top: auto;
+  padding: 12px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--texte3);
+  font-family: var(--police-mono);
+}
+
+/* ══════════════════════════
+   RESPONSIVE
+══════════════════════════ */
+
+@media (max-width: 1024px) {
+  .grille-jauges     { grid-template-columns: repeat(2, 1fr); }
+  .grille-inferieure { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .barre-laterale {
+    position: fixed;
+    left: 0; right: 0; top: auto; bottom: 0;
+    width: 100%; height: 56px;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0 12px;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    z-index: 200;
+  }
+
+  .logo { display: none; }
+  .bas-barre-laterale { margin-top: 0; }
+  .contenu-principal { margin-left: 0; margin-bottom: 56px; }
+
+  .barre-superieure {
+    padding: 0 12px;
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 52px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .titre-application { font-size: 13px; flex: 1 1 100%; }
+  .etiquette-role    { display: none; }
+
+  .barre-onglets {
+    overflow-x: auto;
+    padding: 0 12px;
+    scrollbar-width: none;
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  .onglet { white-space: nowrap; padding: 9px 10px; font-size: 11px; }
+
+  .zone-contenu { padding: 12px; gap: 12px; }
+
+  .statut-global { flex-direction: column; align-items: flex-start; gap: 10px; }
+
+  .grille-jauges {
+    grid-template-columns: 1fr;
+    .carte-capteur {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .entete-capteur   { flex-direction: column; align-items: flex-start; margin-bottom: 0; min-width: 80px; }
+    .echelle-capteur  { display: none; }
+    .barre-progression-fond { display: none; }
+    .jauge-svg        { width: 75px; height: 46px; flex-shrink: 0; }
+  }
+
+  .grille-inferieure { grid-template-columns: 1fr; }
+
+  .pied-de-page {
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+  }
+}
+
+@media (max-width: 400px) {
+  .grille-jauges { gap: 8px; }
+  .carte-capteur { padding: 10px; }
+}

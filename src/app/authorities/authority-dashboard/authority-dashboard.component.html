@@ -1,0 +1,291 @@
+<div class="mise-en-page">
+
+  <!-- BARRE LATERALE -->
+  <nav class="barre-laterale">
+    <div class="logo"></div>
+    <div class="element-nav actif">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    </div>
+    <div class="element-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div class="element-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </div>
+    <div class="element-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+    </div>
+    <div class="bas-barre-laterale">
+      <div class="avatar">AU</div>
+    </div>
+  </nav>
+
+  <!-- CONTENU PRINCIPAL -->
+  <div class="contenu-principal">
+
+    <!-- BARRE SUPERIEURE -->
+    <header class="barre-superieure">
+      <div class="titre-application">Fire<span>Watch</span> — Centre de Supervision</div>
+      <div class="etiquette-role">Autorités locales</div>
+      <div class="pastille-statut" [ngClass]="nombreAlertes > 0 ? 'danger' : 'ok'">
+        <span class="point-clignotant" [ngClass]="nombreAlertes > 0 ? 'rouge' : 'vert'"></span>
+        {{ nombreAlertes > 0 ? nombreAlertes + ' alerte(s) active(s)' : 'Situation normale' }}
+      </div>
+      <button class="bouton-navigation" (click)="allerVersResidents()" title="Vue Résidents">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>Résidents</span>
+      </button>
+      <div class="bouton-topbar">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="badge-notif" *ngIf="nombreAlertes > 0">{{ nombreAlertes }}</span>
+      </div>
+    </header>
+
+    <!-- BARRE D'ONGLETS -->
+    <div class="barre-onglets">
+      <div class="onglet actif">Vue d'ensemble</div>
+      <div class="onglet">Sites surveillés</div>
+      <div class="onglet">Historique</div>
+      <div class="onglet">Alertes</div>
+      <div class="onglet">Unités</div>
+      <div class="onglet">Rapports</div>
+    </div>
+
+    <!-- ZONE DE CONTENU -->
+    <div class="zone-contenu">
+
+      <!-- BANDEAU ALERTE ACTIF -->
+      <div class="bandeau-alerte" *ngIf="nombreAlertes > 0">
+        <div class="icone-alerte">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <div class="texte-bandeau">
+          <div class="titre-bandeau">Fumée critique — Bâtiment B, Zone résidentielle Est</div>
+          <div class="detail-bandeau">home/mq2 → {{ sites[1].fumee | number:'1.0-0' }} ppm · Seuil : 300 ppm · Caserne Nord en intervention</div>
+        </div>
+        <div class="heure-bandeau">{{ derniereMaj }}</div>
+      </div>
+
+      <!-- KPI -->
+      <div class="grille-kpi">
+
+        <div class="carte-kpi bleue">
+          <div class="entete-kpi">
+            <span class="etiquette-kpi">Sites surveillés</span>
+            <span class="badge-kpi badge-bleu">ACTIFS</span>
+          </div>
+          <div class="valeur-kpi bleue">{{ nombreSites }}<span class="unite-kpi">sites</span></div>
+          <div class="detail-kpi">
+            <span>En ligne</span><span class="detail-valeur verte">{{ nombreSites }} / {{ nombreSites }}</span>
+          </div>
+          <div class="barre-kpi-fond"><div class="barre-kpi" style="width:100%;background:var(--blue)"></div></div>
+        </div>
+
+        <div class="carte-kpi rouge">
+          <div class="entete-kpi">
+            <span class="etiquette-kpi">Alertes critiques</span>
+            <span class="badge-kpi badge-rouge">ACTIVES</span>
+          </div>
+          <div class="valeur-kpi rouge">{{ nombreAlertes }}<span class="unite-kpi">alerte(s)</span></div>
+          <div class="detail-kpi">
+            <span>Bât. B — Fumée</span>
+            <span class="detail-valeur rouge">{{ sites[1].fumee | number:'1.0-0' }} ppm</span>
+          </div>
+          <div class="barre-kpi-fond"><div class="barre-kpi" style="width:100%;background:var(--red)"></div></div>
+        </div>
+
+        <div class="carte-kpi orange">
+          <div class="entete-kpi">
+            <span class="etiquette-kpi">Avertissements</span>
+            <span class="badge-kpi badge-orange">WATCH</span>
+          </div>
+          <div class="valeur-kpi orange">{{ nombreAvertissements }}<span class="unite-kpi">site(s)</span></div>
+          <div class="detail-kpi">
+            <span>École — Temp.</span>
+            <span class="detail-valeur orange">{{ sites[2].temperature | number:'1.0-0' }}°C</span>
+          </div>
+          <div class="barre-kpi-fond"><div class="barre-kpi" style="width:50%;background:var(--yellow)"></div></div>
+        </div>
+
+        <div class="carte-kpi verte">
+          <div class="entete-kpi">
+            <span class="etiquette-kpi">Unités disponibles</span>
+            <span class="badge-kpi badge-vert">OPÉRAT.</span>
+          </div>
+          <div class="valeur-kpi verte">{{ nombreUnites }}<span class="unite-kpi">unités</span></div>
+          <div class="detail-kpi">
+            <span>Caserne Centre</span><span class="detail-valeur verte">● dispo</span>
+          </div>
+          <div class="barre-kpi-fond"><div class="barre-kpi" style="width:75%;background:var(--green)"></div></div>
+        </div>
+
+      </div>
+
+      <!-- GRAPHIQUE + ALERTES -->
+      <div class="grille-principale">
+
+        <!-- GRAPHIQUE HISTORIQUE -->
+        <div class="carte-graphique">
+          <div class="entete-carte">
+            <div>
+              <div class="titre-carte">Évolution des capteurs — 6 dernières heures</div>
+              <div class="sous-titre-carte">Fumée (ppm) · Tous les sites · Seuil 300 ppm</div>
+            </div>
+            <div class="legende-graphique">
+              <div class="element-legende"><div class="ligne-legende" style="background:var(--red)"></div>Bât. B</div>
+              <div class="element-legende"><div class="ligne-legende" style="background:var(--yellow)"></div>École</div>
+              <div class="element-legende"><div class="ligne-legende" style="background:var(--blue)"></div>Bât. A</div>
+              <div class="element-legende"><div class="ligne-legende" style="background:var(--text3)"></div>Marché</div>
+            </div>
+          </div>
+          <svg class="svg-graphique" viewBox="0 0 620 150" preserveAspectRatio="none">
+            <!-- Lignes de grille -->
+            <line x1="20" y1="20"  x2="600" y2="20"  stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+            <line x1="20" y1="55"  x2="600" y2="55"  stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+            <line x1="20" y1="90"  x2="600" y2="90"  stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+            <line x1="20" y1="125" x2="600" y2="125" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+            <!-- Ligne seuil 300 ppm -->
+            <line x1="20" y1="35" x2="600" y2="35" stroke="rgba(255,77,28,0.4)" stroke-width="1" stroke-dasharray="4 3"/>
+            <text x="24" y="31" font-size="8" fill="#FF4D1C" font-family="IBM Plex Mono">seuil 300 ppm</text>
+            <!-- Courbes -->
+           <polyline [attr.points]="pointsBatA"   fill="none" stroke="var(--bleu)"   stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+           <polyline [attr.points]="pointsBatB"   fill="none" stroke="var(--rouge)"  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+           <polyline [attr.points]="pointsEcole"  fill="none" stroke="var(--jaune)"  stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+           <polyline [attr.points]="pointsMarche" fill="none" stroke="var(--texte3)" stroke-width="1"   stroke-linecap="round" stroke-linejoin="round"/>
+            <!-- Labels heures -->
+            <text x="20"  y="148" font-size="7" fill="#4A5568" font-family="IBM Plex Mono" text-anchor="middle">-6h</text>
+            <text x="117" y="148" font-size="7" fill="#4A5568" font-family="IBM Plex Mono" text-anchor="middle">-5h</text>
+            <text x="214" y="148" font-size="7" fill="#4A5568" font-family="IBM Plex Mono" text-anchor="middle">-4h</text>
+            <text x="311" y="148" font-size="7" fill="#4A5568" font-family="IBM Plex Mono" text-anchor="middle">-3h</text>
+            <text x="408" y="148" font-size="7" fill="#4A5568" font-family="IBM Plex Mono" text-anchor="middle">-2h</text>
+            <text x="505" y="148" font-size="7" fill="#4A5568" font-family="IBM Plex Mono" text-anchor="middle">-1h</text>
+            <text x="600" y="148" font-size="7" fill="var(--accent)" font-family="IBM Plex Mono" text-anchor="middle">now</text>
+          </svg>
+        </div>
+
+        <!-- JOURNAL D'ALERTES -->
+        <div class="panneau-alertes">
+          <div class="entete-carte">
+            <div>
+              <div class="titre-carte">Journal d'alertes</div>
+              <div class="sous-titre-carte">Aujourd'hui — {{ alertes.length }} événements</div>
+            </div>
+          </div>
+          <div class="liste-alertes">
+            <div class="element-alerte" *ngFor="let alerte of alertes" [ngClass]="alerte.niveau">
+              <div class="point-alerte" [ngClass]="obtenirClasseAlerte(alerte.niveau)"></div>
+              <div class="corps-alerte">
+                <div class="titre-alerte">{{ alerte.titre }}</div>
+                <div class="detail-alerte">{{ alerte.detail }}</div>
+              </div>
+              <div class="heure-alerte">{{ alerte.heure }}</div>
+            </div>
+          </div>
+          <div class="actions-journal">
+            <button class="bouton-action primaire">Envoyer rapport</button>
+            <button class="bouton-action secondaire">Archiver</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- GRILLE INFERIEURE -->
+      <div class="grille-inferieure">
+
+        <!-- TABLEAU SITES -->
+        <div class="carte">
+          <div class="entete-carte">
+            <div>
+              <div class="titre-carte">État des sites surveillés</div>
+              <div class="sous-titre-carte">Mise à jour : {{ derniereMaj }}</div>
+            </div>
+          </div>
+          <table class="tableau-sites">
+            <thead>
+              <tr>
+                <th>Site</th>
+                <th>Fumée</th>
+                <th>Temp.</th>
+                <th>Hum.</th>
+                <th>Statut</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let site of sites">
+                <td>
+                  <div class="nom-site">{{ site.nom }}</div>
+                  <div class="adresse-site">{{ site.adresse }}</div>
+                </td>
+                <td [ngClass]="obtenirClasseValeurFumee(site.fumee)">{{ site.fumee | number:'1.0-0' }} ppm</td>
+                <td [ngClass]="obtenirClasseValeurTemp(site.temperature)">{{ site.temperature | number:'1.0-0' }}°C</td>
+                <td>{{ site.humidite | number:'1.0-0' }}%</td>
+                <td>
+                  <span class="badge-statut" [ngClass]="obtenirClasseStatutSite(site.statut)">
+                    {{ obtenirLibelleStatut(site.statut) }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- UNITES + ACTIONS -->
+        <div class="colonne-droite">
+
+          <!-- UNITES -->
+          <div class="carte">
+            <div class="titre-carte">Unités d'intervention</div>
+            <div class="sous-titre-carte" style="margin-bottom:12px">Pompiers · Police · SAMU</div>
+            <div class="liste-unites">
+              <div class="element-unite" *ngFor="let unite of unites">
+                <div class="indicateur-unite" [ngClass]="'ind-' + unite.statut"></div>
+                <div class="info-unite">
+                  <div class="nom-unite">{{ unite.nom }}</div>
+                  <div class="type-unite">{{ unite.type }}</div>
+                </div>
+                <div class="statut-unite" [ngClass]="obtenirClasseUnite(unite.statut)">
+                  {{ obtenirLibelleUnite(unite.statut) }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ACTIONS RAPIDES -->
+          <div class="carte">
+            <div class="titre-carte" style="margin-bottom:12px">Actions rapides</div>
+            <div class="liste-actions">
+              <button class="bouton-action-rapide primaire">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Alerter les résidents
+              </button>
+              <button class="bouton-action-rapide secondaire">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.64 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l.81-.81a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                Contacter une unité
+              </button>
+              <button class="bouton-action-rapide neutre">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                Générer rapport d'incident
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <footer class="pied-de-page">
+      <span>FireWatch v1.0 · Centre de Supervision Autorités</span>
+      <span>Node-RED · Mosquitto · ESP32</span>
+      <span>Projet IoT Détection Incendie · 2026</span>
+    </footer>
+
+  </div>
+</div>

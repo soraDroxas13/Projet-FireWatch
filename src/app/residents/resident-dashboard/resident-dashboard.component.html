@@ -1,0 +1,385 @@
+<app-notification-popup></app-notification-popup>
+<div class="mise-en-page">
+
+  <!-- BARRE LATERALE -->
+  <nav class="barre-laterale">
+    <div class="logo"></div>
+    <div class="element-nav actif">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    </div>
+    <div class="element-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </div>
+    <div class="element-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    </div>
+    <div class="bas-barre-laterale">
+      <div class="avatar">OC</div>
+    </div>
+  </nav>
+
+  <!-- CONTENU PRINCIPAL -->
+  <div class="contenu-principal">
+
+    <!-- BARRE SUPERIEURE -->
+    <header class="barre-superieure">
+      <div class="titre-application">Fire<span>Watch</span> — Espace Résident</div>
+      <div class="etiquette-role">Habitant / Occupant</div>
+      <div class="pastille-statut" [ngClass]="estEnDanger ? 'danger' : 'ok'">
+        <span class="point-clignotant" [ngClass]="estEnDanger ? 'rouge' : 'vert'"></span>
+        {{ estEnDanger ? 'ALERTE EN COURS' : 'Bâtiment sécurisé' }}
+      </div>
+      <button class="bouton-navigation" (click)="allerVersAutorites()" title="Vue Autorités">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>Autorités</span>
+      </button>
+      <div class="indicateur-connexion" [ngClass]="estConnecte ? 'connecte' : 'deconnecte'">
+        <span class="point-connexion"></span>
+        {{ estConnecte ? 'MQTT connecté' : 'MQTT déconnecté' }}
+      </div>
+    </header>
+
+    <!-- BARRE D'ONGLETS -->
+    <div class="barre-onglets">
+      <div class="onglet" [ngClass]="ongletActif === 'statut' ? 'actif' : ''"
+           (click)="changerOnglet('statut')">Statut</div>
+      <div class="onglet" [ngClass]="ongletActif === 'capteurs' ? 'actif' : ''"
+           (click)="changerOnglet('capteurs')">Capteurs</div>
+      <div class="onglet" [ngClass]="ongletActif === 'alertes' ? 'actif' : ''"
+           (click)="changerOnglet('alertes')">
+        Alertes
+        <span class="badge-onglet" *ngIf="nombreAlertes > 0">{{ nombreAlertes }}</span>
+      </div>
+      <div class="onglet" [ngClass]="ongletActif === 'consignes' ? 'actif' : ''"
+           (click)="changerOnglet('consignes')">Consignes</div>
+    </div>
+
+    <!-- ZONE DE CONTENU -->
+    <div class="zone-contenu">
+
+      <div class="zone-contenu">
+      
+        <!-- ONGLET STATUT -->
+        <ng-container *ngIf="ongletActif === 'statut'">
+          <!-- bandeau alerte, statut global, grille jauges, grille inférieure -->
+          <!-- BANDEAU D'ALERTE -->
+            <div class="bandeau-alerte" [ngClass]="estEnDanger ? 'danger' : 'securite'">
+              <div class="icone-alerte" [ngClass]="estEnDanger ? 'danger' : 'securite'">
+                <svg *ngIf="!estEnDanger" viewBox="0 0 24 24" fill="none" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+                <svg *ngIf="estEnDanger" viewBox="0 0 24 24" fill="none" stroke-width="2">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                  <line x1="12" y1="9" x2="12" y2="13"/>
+                  <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+              </div>
+              <div class="texte-alerte">
+                <div class="titre-alerte" [ngClass]="estEnDanger ? 'danger' : 'securite'">
+                  {{ estEnDanger ? 'DANGER — Évacuez immédiatement !' : 'Tout est normal — Aucun danger détecté' }}
+                </div>
+                <div class="sous-titre-alerte">
+                  {{ estEnDanger
+                    ? 'Niveau de fumée critique. Quittez le bâtiment par les escaliers.'
+                    : 'Les capteurs sont dans les limites normales. Restez serein.' }}
+                </div>
+              </div>
+              <div class="heure-maj">{{ derniereMaj }}</div>
+            </div>
+          
+            <!-- STATUT GLOBAL -->
+            <div class="statut-global">
+              <div class="icone-statut" [ngClass]="estEnDanger ? 'danger' : 'securite'">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+              </div>
+              <div>
+                <div class="titre-statut" [ngClass]="estEnDanger ? 'danger' : 'securite'">
+                  {{ estEnDanger ? 'DANGER — Évacuation requise' : 'Bâtiment protégé' }}
+                </div>
+                <div class="sous-titre-statut">
+                  {{ estEnDanger
+                    ? 'Appelez le 18. Empruntez les escaliers. Ne revenez pas.'
+                    : 'Surveillance active 24h/24 — Tous les capteurs fonctionnent normalement.' }}
+                </div>
+              </div>
+            </div>
+          
+            <!-- GRILLE DE JAUGES -->
+            <div class="grille-jauges">
+          
+              <!-- FUMEE -->
+              <div class="carte-capteur" [ngClass]="niveauFumee > 300 ? 'danger' : niveauFumee > 200 ? 'alerte' : ''">
+                <div class="entete-capteur">
+                  <span class="etiquette-capteur">Fumée MQ-2</span>
+                  <span class="badge-capteur" [ngClass]="classeBadgeFumee">{{ badgeFumee }}</span>
+                </div>
+                <svg class="jauge-svg" viewBox="0 0 100 60">
+                  <path d="M10 55 A40 40 0 0 1 90 55" fill="none" stroke="#1C2634" stroke-width="8" stroke-linecap="round"/>
+                  <path d="M10 55 A40 40 0 0 1 90 55" fill="none"
+                    [attr.stroke]="couleurFumee"
+                    stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="125.6"
+                    [attr.stroke-dashoffset]="offsetFumee"/>
+                  <text x="50" y="50" text-anchor="middle"
+                    [attr.fill]="couleurFumee"
+                    font-family="Syne" font-size="13" font-weight="800">
+                    {{ niveauFumee | number:'1.0-0' }}
+                  </text>
+                </svg>
+                <div class="echelle-capteur">0 ─── 300 ppm</div>
+                <div class="barre-progression-fond">
+                  <div class="barre-progression"
+                    [style.width.%]="largeurBarreFumee"
+                    [style.background]="couleurFumee">
+                  </div>
+                </div>
+              </div>
+          
+              <!-- TEMPERATURE -->
+              <div class="carte-capteur" [ngClass]="temperature > 55 ? 'danger' : temperature > 40 ? 'alerte' : ''">
+                <div class="entete-capteur">
+                  <span class="etiquette-capteur">Température</span>
+                  <span class="badge-capteur" [ngClass]="classeBadgeTemperature">{{ badgeTemperature }}</span>
+                </div>
+                <svg class="jauge-svg" viewBox="0 0 100 60">
+                  <path d="M10 55 A40 40 0 0 1 90 55" fill="none" stroke="#1C2634" stroke-width="8" stroke-linecap="round"/>
+                  <path d="M10 55 A40 40 0 0 1 90 55" fill="none"
+                    [attr.stroke]="couleurTemperature"
+                    stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="125.6"
+                    [attr.stroke-dashoffset]="offsetTemperature"/>
+                  <text x="50" y="50" text-anchor="middle"
+                    [attr.fill]="couleurTemperature"
+                    font-family="Syne" font-size="13" font-weight="800">
+                    {{ temperature | number:'1.0-0' }}
+                  </text>
+                </svg>
+                <div class="echelle-capteur">0 ─── 80°C</div>
+                <div class="barre-progression-fond">
+                  <div class="barre-progression"
+                    [style.width.%]="largeurBarreTemperature"
+                    [style.background]="couleurTemperature">
+                  </div>
+                </div>
+              </div>
+          
+              <!-- HUMIDITE -->
+              <div class="carte-capteur">
+                <div class="entete-capteur">
+                  <span class="etiquette-capteur">Humidité</span>
+                  <span class="badge-capteur badge-normal">NORMAL</span>
+                </div>
+                <svg class="jauge-svg" viewBox="0 0 100 60">
+                  <path d="M10 55 A40 40 0 0 1 90 55" fill="none" stroke="#1C2634" stroke-width="8" stroke-linecap="round"/>
+                  <path d="M10 55 A40 40 0 0 1 90 55" fill="none" stroke="#FFB800"
+                    stroke-width="8" stroke-linecap="round"
+                    stroke-dasharray="125.6"
+                    [attr.stroke-dashoffset]="offsetHumidite"/>
+                  <text x="50" y="50" text-anchor="middle" fill="#FFB800"
+                    font-family="Syne" font-size="13" font-weight="800">
+                    {{ humidite | number:'1.0-0' }}
+                  </text>
+                </svg>
+                <div class="echelle-capteur">0 ─── 100%</div>
+                <div class="barre-progression-fond">
+                  <div class="barre-progression" [style.width.%]="humidite" style="background:#FFB800"></div>
+                </div>
+              </div>
+          
+            </div>
+          
+            <!-- GRILLE INFERIEURE -->
+            <div class="grille-inferieure">
+          
+              <!-- CONSIGNES -->
+              <div class="carte">
+                <div class="titre-carte">Consignes de sécurité</div>
+                <div class="sous-titre-carte">À suivre en cas d'alarme</div>
+                <div class="liste-consignes">
+                  <div class="element-consigne" *ngFor="let consigne of consignes; let i = index">
+                    <div class="numero-consigne">{{ i + 1 }}</div>
+                    <div class="texte-consigne" [innerHTML]="consigne"></div>
+                  </div>
+                </div>
+              </div>
+          
+              <!-- CONTACTS D'URGENCE -->
+              <div class="carte">
+                <div class="titre-carte">Numéros d'urgence</div>
+                <div class="sous-titre-carte">Appeler immédiatement en cas d'alerte</div>
+                <div class="liste-contacts">
+                  <div class="contact pompiers">
+                    <div class="icone-contact">🚒</div>
+                    <div>
+                      <div class="nom-contact">Pompiers</div>
+                      <div class="type-contact">Urgence incendie</div>
+                    </div>
+                    <div class="numero-contact pompiers">18</div>
+                  </div>
+                  <div class="contact samu">
+                    <div class="icone-contact">🚑</div>
+                    <div>
+                      <div class="nom-contact">SAMU</div>
+                      <div class="type-contact">Urgence médicale</div>
+                    </div>
+                    <div class="numero-contact samu">15</div>
+                  </div>
+                  <div class="contact police">
+                    <div class="icone-contact">🚔</div>
+                    <div>
+                      <div class="nom-contact">Police</div>
+                      <div class="type-contact">Sécurité civile</div>
+                    </div>
+                    <div class="numero-contact police">17</div>
+                  </div>
+                </div>
+              </div>
+          
+            </div>
+        </ng-container>
+      
+        <!-- ONGLET CAPTEURS -->
+        <ng-container *ngIf="ongletActif === 'capteurs'">
+          <div class="carte">
+            <div class="entete-carte">
+              <div>
+                <div class="titre-carte">Historique — Fumée (ppm)</div>
+                <div class="sous-titre-carte">20 dernières mesures · Seuil : 300 ppm</div>
+              </div>
+            </div>
+            <svg class="svg-graphique" viewBox="0 0 620 120" preserveAspectRatio="none">
+              <line x1="20" y1="10" x2="600" y2="10" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+              <line x1="20" y1="40" x2="600" y2="40" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+              <line x1="20" y1="70" x2="600" y2="70" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+              <line x1="20" y1="100" x2="600" y2="100" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+              <line x1="20" y1="30" x2="600" y2="30" stroke="rgba(224,92,92,0.4)" stroke-width="1" stroke-dasharray="4 3"/>
+              <text x="24" y="26" font-size="8" fill="#E05C5C" font-family="IBM Plex Mono">seuil 300 ppm</text>
+              <polyline [attr.points]="pointsGraphiqueFumee"
+                fill="none" stroke="var(--bleu)" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round"/>
+              <text x="20" y="115" font-size="7" fill="#555E72" font-family="IBM Plex Mono">-20</text>
+              <text x="600" y="115" font-size="7" fill="#4F86F7" font-family="IBM Plex Mono" text-anchor="end">maintenant</text>
+            </svg>
+          </div>
+      
+          <div class="grille-jauges" style="margin-top:0">
+            <div class="carte">
+              <div class="titre-carte" style="margin-bottom:8px">Historique — Température (°C)</div>
+              <svg class="svg-graphique" viewBox="0 0 620 100" preserveAspectRatio="none">
+                <line x1="20" y1="20" x2="600" y2="20" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                <line x1="20" y1="60" x2="600" y2="60" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                <line x1="20" y1="90" x2="600" y2="90" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                <polyline [attr.points]="pointsGraphiqueTemp"
+                  fill="none" stroke="var(--cyan)" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="carte">
+              <div class="titre-carte" style="margin-bottom:8px">Historique — Humidité (%)</div>
+              <svg class="svg-graphique" viewBox="0 0 620 100" preserveAspectRatio="none">
+                <line x1="20" y1="20" x2="600" y2="20" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                <line x1="20" y1="60" x2="600" y2="60" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                <line x1="20" y1="90" x2="600" y2="90" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                <polyline [attr.points]="pointsGraphiqueHum"
+                  fill="none" stroke="var(--jaune)" stroke-width="1.5"
+                  stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </ng-container>
+      
+        <!-- ONGLET ALERTES -->
+        <ng-container *ngIf="ongletActif === 'alertes'">
+          <div class="carte">
+            <div class="entete-carte">
+              <div>
+                <div class="titre-carte">Journal des alertes</div>
+                <div class="sous-titre-carte">Historique complet des événements</div>
+              </div>
+              <button class="bouton-action-rapide neutre" style="font-size:11px;padding:6px 10px"
+                      (click)="marquerToutesLues()">
+                Tout marquer comme lu
+              </button>
+            </div>
+            <div class="liste-alertes-journal">
+              <div class="element-alerte-journal"
+                   *ngFor="let alerte of listeAlertes"
+                   [ngClass]="[alerte.niveau, alerte.lue ? 'lue' : '']">
+                <div class="point-alerte" [ngClass]="'point-' + alerte.niveau"></div>
+                <div class="corps-alerte-journal">
+                  <div class="titre-alerte-journal">{{ alerte.titre }}</div>
+                  <div class="detail-alerte-journal">{{ alerte.detail }}</div>
+                </div>
+                <div class="heure-alerte-journal">{{ alerte.heure }}</div>
+              </div>
+              <div class="aucune-alerte" *ngIf="listeAlertes.length === 0">
+                Aucune alerte enregistrée.
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      
+        <!-- ONGLET CONSIGNES -->
+        <ng-container *ngIf="ongletActif === 'consignes'">
+          <div class="carte">
+            <div class="titre-carte">Consignes de sécurité</div>
+            <div class="sous-titre-carte" style="margin-bottom:16px">À suivre impérativement en cas d'alarme</div>
+            <div class="liste-consignes">
+              <div class="element-consigne" *ngFor="let consigne of consignes; let i = index">
+                <div class="numero-consigne">{{ i + 1 }}</div>
+                <div class="texte-consigne" [innerHTML]="consigne"></div>
+              </div>
+            </div>
+          </div>
+          <div class="grille-inferieure">
+            <div class="carte">
+              <div class="titre-carte">Numéros d'urgence</div>
+              <div class="sous-titre-carte" style="margin-bottom:12px">Appeler immédiatement en cas d'alerte</div>
+              <div class="liste-contacts">
+                <div class="contact pompiers">
+                  <div class="icone-contact">🚒</div>
+                  <div><div class="nom-contact">Pompiers</div><div class="type-contact">Urgence incendie</div></div>
+                  <div class="numero-contact pompiers">18</div>
+                </div>
+                <div class="contact samu">
+                  <div class="icone-contact">🚑</div>
+                  <div><div class="nom-contact">SAMU</div><div class="type-contact">Urgence médicale</div></div>
+                  <div class="numero-contact samu">15</div>
+                </div>
+                <div class="contact police">
+                  <div class="icone-contact">🚔</div>
+                  <div><div class="nom-contact">Police</div><div class="type-contact">Sécurité civile</div></div>
+                  <div class="numero-contact police">17</div>
+                </div>
+              </div>
+            </div>
+            <div class="carte">
+              <div class="titre-carte">Point de rassemblement</div>
+              <div class="sous-titre-carte" style="margin-bottom:12px">En cas d'évacuation</div>
+              <div class="element-consigne" style="background:rgba(79,134,247,0.06);border-color:rgba(79,134,247,0.2)">
+                <div class="numero-consigne" style="background:rgba(79,134,247,0.12);border-color:rgba(79,134,247,0.25)">📍</div>
+                <div class="texte-consigne">Rassemblement devant l'entrée principale du bâtiment. <strong>Attendez les instructions des secours.</strong></div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      
+      </div>
+
+      
+
+    </div>
+
+    <footer class="pied-de-page">
+      <span>FireWatch v1.0 · Espace Résident</span>
+      <span>Surveillance IoT 24h/24</span>
+      <span>Projet Détection Incendie · 2026</span>
+    </footer>
+
+  </div>
+</div>
